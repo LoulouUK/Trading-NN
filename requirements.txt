@@ -1,0 +1,30 @@
+fastapi==0.111.*
+uvicorn[standard]==0.30.*
+gunicorn==22.*
+numpy
+pandas
+requests
+python-dateutil
+
+# CPU PyTorch base keeps install simple and stable
+FROM pytorch/pytorch:2.3.1-cpu
+
+WORKDIR /app
+
+# System deps (optional, but good to have basic utils)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Python deps
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# App code
+COPY . .
+
+# Render sets $PORT automatically. Default to 8000 locally.
+ENV PORT=8000
+EXPOSE 8000
+
+# Use gunicorn with uvicorn workers (prod-ready)
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "2", "-b", "0.0.0.0:8000", "api:app"]

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.DS_Store
+
+# Virtual env
+.venv/
+venv/
+
+# Artifacts / models / data
+artifacts/
+*.pt
+*.pth
+*.onnx
+*.h5
+*.csv
+
+# Node (if ever used)
+node_modules/
+
+# VSCode
+.vscode/

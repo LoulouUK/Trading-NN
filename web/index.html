@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI Trading Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      /* Fallback styles so the API health dot is always visible */
+      .pill .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #9aa1b3;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .pill .dot.ok {
+        background: #72e6b1;
+      } /* green */
+      .pill .dot.down {
+        background: #ff6b6b;
+      } /* red */
+    </style>
+    <!-- Chart.js (CDN) -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"
+    ></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>AI Trading Dashboard</h1>
+      <div class="pill">local</div>
+      <div class="pill">API <span id="healthDot" class="dot down"></span></div>
+    </header>
+
+    <main class="wrap">
+      <section class="panel">
+        <form id="controls">
+          <label>
+            Symbol
+            <input type="text" id="symbol" value="BTCUSDT" />
+          </label>
+          <label>
+            Interval
+            <select id="interval">
+              <option>15m</option>
+              <option selected>1h</option>
+              <option>4h</option>
+              <option>1d</option>
+            </select>
+          </label>
+          <label>
+            Horizon (bars)
+            <input type="number" id="horizon" value="12" min="4" max="96" />
+          </label>
+          <label>
+            TP (R:R)
+            <input
+              type="number"
+              id="tpRR"
+              value="1.5"
+              step="0.1"
+              min="0.1"
+              max="10"
+            />
+          </label>
+          <label>
+            TP Preset
+            <select id="tpPresets">
+              <option value="">—</option>
+              <option value="1.0">1.0</option>
+              <option value="1.5" selected>1.5</option>
+              <option value="2.0">2.0</option>
+              <option value="3.0">3.0</option>
+            </select>
+          </label>
+          <div class="btns">
+            <button type="button" id="btnSignal">Get Signal</button>
+            <button type="button" id="btnTrain" class="ghost">
+              Train Model
+            </button>
+          </div>
+        </form>
+
+        <div id="status" class="status">Ready.</div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="label">P(BUY)</div>
+            <div class="value" id="pbuy">—</div>
+          </div>
+          <div class="card">
+            <div class="label">Price</div>
+            <div class="value" id="price">—</div>
+          </div>
+          <div class="card">
+            <div class="label">ATR(14)</div>
+            <div class="value" id="atr">—</div>
+          </div>
+          <div class="card" id="slCard">
+            <div class="label">SL Price</div>
+            <div class="value" id="sl">—</div>
+          </div>
+          <div class="card" id="tpCard">
+            <div class="label">TP Price</div>
+            <div class="value" id="tp">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel chart-panel">
+        <canvas id="chart" height="120"></canvas>
+      </section>
+
+      <section class="panel">
+        <h2>Recent Signals</h2>
+        <table class="table" id="signalsTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Symbol</th>
+              <th>Interval</th>
+              <th>P(BUY)</th>
+              <th>Price</th>
+              <th>SL</th>
+              <th>TP</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="small dim">Educational use only. Not financial advice.</p>
+      </section>
+    </main>
+  </body>
+</html>
